@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VocabSaver</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>VocabSaver</h1>
+          <span class="version-tag">AI</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-add-word" title="Add Word Manually">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button class="icon-btn" id="btn-manage-cats" title="Manage Categories">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        </button>
+        <button class="icon-btn" id="btn-settings" title="Settings & Backup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search & Quick Stats -->
+    <div class="search-bar-row">
+      <div class="search-input-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search saved vocabulary...">
+        <button id="btn-clear-search" class="clear-search-btn" style="display:none;">✕</button>
+      </div>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="category-filters-container">
+      <div class="category-filters" id="category-filters">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Main Vocab List Area -->
+    <main class="vocab-list" id="vocab-list">
+      <!-- Word cards rendered via JS -->
+    </main>
+
+    <!-- Bottom Status Bar -->
+    <footer class="app-footer">
+      <span id="footer-stats">0 words</span>
+      <span class="footer-tip">💡 Tip: Press Alt+V on AI chats</span>
+    </footer>
+  </div>
+
+  <!-- Modal: Add Word Manually -->
+  <div class="modal-overlay" id="modal-add-word" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Add Vocabulary</h2>
+        <button class="modal-close" data-close="modal-add-word">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Word or Phrase *</label>
+        <input type="text" id="add-word-input" class="form-input" placeholder="e.g. Ubiquitous, Double down...">
+
+        <label class="form-label">Category</label>
+        <select id="add-category-select" class="form-select"></select>
+
+        <div id="add-new-cat-group" style="display: none; margin-top: -6px; margin-bottom: 12px;">
+          <input type="text" id="add-new-cat-input" class="form-input" placeholder="Enter new category name...">
+        </div>
+
+        <label class="form-label">Context / Example Sentence (Optional)</label>
+        <textarea id="add-context-input" class="form-textarea" placeholder="How was it used? e.g. 'Smartphones have become ubiquitous in modern life.'"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close="modal-add-word">Cancel</button>
+        <button class="btn btn-primary" id="btn-submit-add-word">Save Word</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Manage Categories -->
+  <div class="modal-overlay" id="modal-manage-cats" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Manage Categories</h2>
+        <button class="modal-close" data-close="modal-manage-cats">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="add-cat-row">
+          <input type="text" id="new-category-input" class="form-input" placeholder="New category name...">
+          <button class="btn btn-primary" id="btn-create-category">+ Add</button>
+        </div>
+        <div class="categories-management-list" id="manage-cats-list">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close="modal-manage-cats">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Settings & Prompt Template -->
+  <div class="modal-overlay" id="modal-settings" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Settings & AI Prompt</h2>
+        <button class="modal-close" data-close="modal-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">AI Chat Rephrase Prompt Template</label>
+        <p class="form-help">Available variables: <code>{words}</code> (comma-separated vocabulary), <code>{category}</code>, <code>{text}</code> (user's input text).</p>
+        <textarea id="settings-prompt-template" class="form-textarea" style="height: 110px;"></textarea>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+          <button class="btn-text" id="btn-reset-template">Reset to Default Template</button>
+        </div>
+
+        <hr class="form-divider">
+
+        <label class="form-label">Backup & Restore</label>
+        <p class="form-help">Export your vocabulary to JSON or restore from a previous backup file.</p>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" id="btn-export-json">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export JSON
+          </button>
+          <button class="btn btn-secondary" id="btn-import-trigger">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Import JSON
+          </button>
+          <input type="file" id="import-file-input" accept=".json" style="display: none;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btn-save-settings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

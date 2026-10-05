@@ -1,0 +1,34 @@
+/* VocabSaver - In-Page Host Styles */
+/* All UI internals are isolated in Shadow DOM, this styles the custom wrapper elements */
+
+vocabsaver-selection-container {
+  all: initial !important;
+  position: fixed !important;
+  display: block !important;
+  z-index: 2147483645 !important;
+  pointer-events: auto !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+vocabsaver-ai-dock {
+  all: initial !important;
+  position: fixed !important;
+  display: block !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 2147483646 !important;
+  pointer-events: auto !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+vocabsaver-toast-container {
+  all: initial !important;
+  position: fixed !important;
+  display: block !important;
+  bottom: 30px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
