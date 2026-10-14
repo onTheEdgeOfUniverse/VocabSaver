@@ -41,6 +41,7 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
+      color-scheme: dark;
     }
 
     /* Floating Pill Button */
@@ -152,6 +153,11 @@
       border-color: #6366f1;
       box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
       background: rgba(255, 255, 255, 0.05);
+    }
+    .vs-select option {
+      background-color: #18181b !important;
+      color: #f4f4f5 !important;
+      padding: 8px 10px;
     }
 
     .vs-context-preview {
@@ -311,6 +317,13 @@
       overflow-y: auto;
       padding: 1px;
     }
+    .vs-cat-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
     .vs-cat-chip {
       padding: 4px 9px;
       background: rgba(255, 255, 255, 0.035);
@@ -322,7 +335,7 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       transition: all 0.15s;
     }
     .vs-cat-chip:hover {
@@ -646,6 +659,7 @@
   let pillOriginRectTop = 0;
   let pillShownAt = 0;
   let lastScrollTime = 0;
+  let lastUsedCategory = null;
 
   function ensureSelectionHost() {
     if (!selectionHost || !selectionHost.parentElement) {
@@ -882,6 +896,8 @@
     selectionHost.style.setProperty('height', 'auto', 'important');
     selectionHost.style.setProperty('pointer-events', 'auto', 'important');
 
+    const defaultCat = lastUsedCategory || (categories.length > 0 ? categories[0] : 'Uncategorized');
+
     const card = document.createElement('div');
     card.className = 'vs-modal-card';
     card.innerHTML = `
@@ -900,8 +916,8 @@
 
       <label class="vs-label">Category</label>
       <select class="vs-select" id="vs-category-select">
-        <option value="Uncategorized">Uncategorized</option>
-        ${categories.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+        ${categories.map((c) => `<option value="${escapeHtml(c)}" ${c === defaultCat ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('')}
+        <option value="Uncategorized" ${defaultCat === 'Uncategorized' ? 'selected' : ''}>Uncategorized</option>
         <option value="__NEW__">+ Create New Category...</option>
       </select>
 
@@ -984,6 +1000,8 @@
           sourceUrl: currentSelectionData ? currentSelectionData.sourceUrl : window.location.href,
           sourceTitle: currentSelectionData ? currentSelectionData.sourceTitle : (document.title || '')
         });
+
+        lastUsedCategory = chosenCategory;
 
         forceCloseDialog();
 
@@ -1143,19 +1161,31 @@
           <div>
             <label class="vs-label">Select Category</label>
             <div class="vs-categories-pills">
-              <div class="vs-cat-chip ${selectedCategory === 'Uncategorized' ? 'active' : ''}" data-cat="Uncategorized">
-                Uncategorized
-                <span class="vs-cat-count">${(wordsByCategory['Uncategorized'] || []).length}</span>
-              </div>
+              ${(() => {
+                const storage = getStorageUtil();
+                const uncatColor = storage && storage.getCategoryColor ? storage.getCategoryColor('Uncategorized') : { dot: '#94a3b8', text: '#d4d4d8', border: 'rgba(255,255,255,0.08)' };
+                const isUncatActive = selectedCategory === 'Uncategorized';
+                return `
+                  <div class="vs-cat-chip ${isUncatActive ? 'active' : ''}" data-cat="Uncategorized" style="${isUncatActive ? `background:${uncatColor.dot};border-color:${uncatColor.dot};color:#ffffff;` : `border-color:${uncatColor.border};`}">
+                    <span class="vs-cat-dot" style="background:${uncatColor.dot};"></span>
+                    <span>Uncategorized</span>
+                    <span class="vs-cat-count">${(wordsByCategory['Uncategorized'] || []).length}</span>
+                  </div>
+                `;
+              })()}
               ${categories
-                .map(
-                  (c) => `
-                <div class="vs-cat-chip ${selectedCategory === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">
-                  ${escapeHtml(c)}
-                  <span class="vs-cat-count">${(wordsByCategory[c] || []).length}</span>
-                </div>
-              `
-                )
+                .map((c) => {
+                  const storage = getStorageUtil();
+                  const color = storage && storage.getCategoryColor ? storage.getCategoryColor(c) : { dot: '#818cf8', text: '#d4d4d8', border: 'rgba(255,255,255,0.08)' };
+                  const isActive = selectedCategory === c;
+                  return `
+                    <div class="vs-cat-chip ${isActive ? 'active' : ''}" data-cat="${escapeHtml(c)}" style="${isActive ? `background:${color.dot};border-color:${color.dot};color:#ffffff;` : `border-color:${color.border};`}">
+                      <span class="vs-cat-dot" style="background:${color.dot};"></span>
+                      <span>${escapeHtml(c)}</span>
+                      <span class="vs-cat-count">${(wordsByCategory[c] || []).length}</span>
+                    </div>
+                  `;
+                })
                 .join('')}
             </div>
           </div>

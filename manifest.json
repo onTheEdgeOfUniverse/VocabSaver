@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "VocabSaver - AI Vocabulary Collector & Rephraser",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Highlight & save words/phrases into categories, inject them with AI rephrasing prompts in ChatGPT, Claude, Gemini, and more.",
   "icons": {
     "16": "icons/icon16.png",

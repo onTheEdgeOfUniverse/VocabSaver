@@ -1,6 +1,7 @@
 /* VocabSaver - Modern Minimalist Theme */
 
 :root {
+  color-scheme: dark;
   --bg-primary: #09090b;
   --bg-secondary: #111114;
   --bg-card: rgba(255, 255, 255, 0.025);
@@ -215,6 +216,23 @@ body {
   display: none;
 }
 
+.cat-dot {
+  display: inline-block;
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cat-dot-sm {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
 .filter-chip {
   flex-shrink: 0;
   padding: 4px 10px;
@@ -227,7 +245,7 @@ body {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
@@ -305,12 +323,15 @@ body {
 .word-category-badge {
   font-size: 10px;
   font-weight: 500;
-  padding: 2px 7px;
+  padding: 2.5px 8px;
   border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: var(--accent-subtle);
   color: #c7d2fe;
-  border: 1px solid var(--accent-border);
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
 }
 
 .word-context {
@@ -539,6 +560,11 @@ body {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   background-color: rgba(255, 255, 255, 0.05);
+}
+.form-select option {
+  background-color: #18181b;
+  color: #f4f4f5;
+  padding: 8px 10px;
 }
 .form-textarea {
   resize: vertical;

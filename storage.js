@@ -273,6 +273,47 @@ const StorageUtil = {
         chrome.storage.local.set({ vocab_settings: merged }, () => resolve(merged));
       });
     });
+  },
+
+  /**
+   * Get theme colors for a category
+   * @param {string} category
+   * @returns {{ text: string, bg: string, border: string, dot: string }}
+   */
+  getCategoryColor(category) {
+    const CATEGORY_COLORS = {
+      'Academic & GRE': { text: '#a5b4fc', bg: 'rgba(99, 102, 241, 0.15)', border: 'rgba(99, 102, 241, 0.35)', dot: '#818cf8' },
+      'Business & Professional': { text: '#6ee7b7', bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.35)', dot: '#34d399' },
+      'Tech & Engineering': { text: '#67e8f9', bg: 'rgba(6, 182, 212, 0.15)', border: 'rgba(6, 182, 212, 0.35)', dot: '#22d3ee' },
+      'Idioms & Phrases': { text: '#fcd34d', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.35)', dot: '#fbbf24' },
+      'Expressive Adjectives': { text: '#f472b6', bg: 'rgba(244, 63, 94, 0.15)', border: 'rgba(244, 63, 94, 0.35)', dot: '#fb7185' },
+      'Uncategorized': { text: '#94a3b8', bg: 'rgba(148, 163, 184, 0.12)', border: 'rgba(148, 163, 184, 0.28)', dot: '#94a3b8' }
+    };
+
+    if (category && CATEGORY_COLORS[category]) {
+      return CATEGORY_COLORS[category];
+    }
+
+    const PALETTE = [
+      { text: '#a5b4fc', bg: 'rgba(99, 102, 241, 0.15)', border: 'rgba(99, 102, 241, 0.35)', dot: '#818cf8' },
+      { text: '#6ee7b7', bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.35)', dot: '#34d399' },
+      { text: '#67e8f9', bg: 'rgba(6, 182, 212, 0.15)', border: 'rgba(6, 182, 212, 0.35)', dot: '#22d3ee' },
+      { text: '#fcd34d', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.35)', dot: '#fbbf24' },
+      { text: '#f472b6', bg: 'rgba(244, 63, 94, 0.15)', border: 'rgba(244, 63, 94, 0.35)', dot: '#fb7185' },
+      { text: '#c084fc', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.35)', dot: '#c084fc' },
+      { text: '#38bdf8', bg: 'rgba(14, 165, 233, 0.15)', border: 'rgba(14, 165, 233, 0.35)', dot: '#38bdf8' }
+    ];
+
+    if (!category || category === 'Uncategorized') {
+      return CATEGORY_COLORS['Uncategorized'];
+    }
+
+    let hash = 0;
+    for (let i = 0; i < category.length; i++) {
+      hash = category.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const idx = Math.abs(hash) % PALETTE.length;
+    return PALETTE[idx];
   }
 };
 

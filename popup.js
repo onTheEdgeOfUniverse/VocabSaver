@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // "All" filter chip
     const allChip = document.createElement('div');
     allChip.className = `filter-chip ${currentCategoryFilter === 'ALL' ? 'active' : ''}`;
-    allChip.innerHTML = `All <span class="filter-count">(${allWords.length})</span>`;
+    allChip.innerHTML = `<span class="cat-dot" style="background: #818cf8;"></span><span>All</span> <span class="filter-count">(${allWords.length})</span>`;
     allChip.addEventListener('click', () => {
       currentCategoryFilter = 'ALL';
       renderCategoriesFilter();
@@ -79,9 +79,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Dynamic category chips
     allCategories.forEach((cat) => {
       const count = allWords.filter((w) => w.category === cat).length;
+      const color = StorageUtil.getCategoryColor(cat);
+      const isActive = currentCategoryFilter === cat;
       const chip = document.createElement('div');
-      chip.className = `filter-chip ${currentCategoryFilter === cat ? 'active' : ''}`;
-      chip.innerHTML = `${escapeHtml(cat)} <span class="filter-count">(${count})</span>`;
+      chip.className = `filter-chip ${isActive ? 'active' : ''}`;
+      chip.innerHTML = `<span class="cat-dot" style="background: ${color.dot};"></span><span>${escapeHtml(cat)}</span> <span class="filter-count">(${count})</span>`;
+      if (isActive) {
+        chip.style.backgroundColor = color.dot;
+        chip.style.borderColor = color.dot;
+        chip.style.color = '#ffffff';
+        chip.style.boxShadow = `0 2px 8px ${color.bg}`;
+      } else {
+        chip.style.borderColor = color.border;
+      }
       chip.addEventListener('click', () => {
         currentCategoryFilter = cat;
         renderCategoriesFilter();
@@ -96,9 +106,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     ).length;
 
     if (uncategorizedCount > 0 && !allCategories.includes('Uncategorized')) {
+      const color = StorageUtil.getCategoryColor('Uncategorized');
+      const isActive = currentCategoryFilter === 'Uncategorized';
       const uncategorizedChip = document.createElement('div');
-      uncategorizedChip.className = `filter-chip ${currentCategoryFilter === 'Uncategorized' ? 'active' : ''}`;
-      uncategorizedChip.innerHTML = `Uncategorized <span class="filter-count">(${uncategorizedCount})</span>`;
+      uncategorizedChip.className = `filter-chip ${isActive ? 'active' : ''}`;
+      uncategorizedChip.innerHTML = `<span class="cat-dot" style="background: ${color.dot};"></span><span>Uncategorized</span> <span class="filter-count">(${uncategorizedCount})</span>`;
+      if (isActive) {
+        uncategorizedChip.style.backgroundColor = color.dot;
+        uncategorizedChip.style.borderColor = color.dot;
+        uncategorizedChip.style.color = '#ffffff';
+      } else {
+        uncategorizedChip.style.borderColor = color.border;
+      }
       uncategorizedChip.addEventListener('click', () => {
         currentCategoryFilter = 'Uncategorized';
         renderCategoriesFilter();
@@ -167,10 +186,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? new Date(item.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
         : '';
 
+      const catName = item.category || 'Uncategorized';
+      const catColor = StorageUtil.getCategoryColor(catName);
+
       card.innerHTML = `
         <div class="word-card-top">
           <span class="word-title">${escapeHtml(item.word)}</span>
-          <span class="word-category-badge">${escapeHtml(item.category || 'Uncategorized')}</span>
+          <span class="word-category-badge" style="color: ${catColor.text}; background-color: ${catColor.bg}; border-color: ${catColor.border};">
+            <span class="cat-dot-sm" style="background: ${catColor.dot};"></span>
+            ${escapeHtml(catName)}
+          </span>
         </div>
         ${
           item.context
@@ -322,10 +347,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     manageCatsList.innerHTML = '';
     allCategories.forEach((cat) => {
       const count = allWords.filter((w) => w.category === cat).length;
+      const color = StorageUtil.getCategoryColor(cat);
       const item = document.createElement('div');
       item.className = 'cat-manage-item';
       item.innerHTML = `
-        <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="cat-dot" style="background: ${color.dot};"></span>
           <span class="cat-manage-name">${escapeHtml(cat)}</span>
           <span class="cat-manage-count">(${count} words)</span>
         </div>
